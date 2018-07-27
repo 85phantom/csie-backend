@@ -24,7 +24,7 @@ class loginAction{
             const dbUser = dbUserQueryResult.users[0]
             const compare = await bcrypt.compare(newUser.password , dbUser.password)
             if(compare){
-                const accesstoken = jwt.sign({ mail: newUser.mail }, key);
+                const accesstoken = jwt.sign({ mail: newUser.mail }, key ,{expiresIn:'1d'});
                 return { token : accesstoken};
             }
             else{
