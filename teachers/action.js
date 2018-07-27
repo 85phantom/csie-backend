@@ -1,4 +1,5 @@
 const Teachers = require('./model');
+const newError = require('../error');
 
 class TeachersAction{
     constructor(options){

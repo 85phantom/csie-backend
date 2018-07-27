@@ -1,9 +1,12 @@
 const Users = require('./model');
-
+const newError = require('../error');
+const bcrypt = require('bcrypt');
+const saltround = 10;
 class UsersAction {
     constructor(options){
         this.db = options.db;
         this.usersPerPage = 10;
+        
     }
 
     async createUsers(data={}){
@@ -15,6 +18,7 @@ class UsersAction {
             if(userExist == true){
                 throw new Error('User Exist');
             }
+            newUsers.password = await bcrypt.hash(newUsers.password, saltround);
             await this.db.insert(newUsers).into('Users');
         }
         catch(err){
@@ -23,8 +27,9 @@ class UsersAction {
         return data;
     }
 
-    async findUsers(query = {}, mail = ''){
+    async findUsers(query = {}){
         const page = query.page;
+        const mail = query.mail;
         const skip = page * this.usersPerPage;
         try {
             let userListQuery = this.db('Users').offset(skip).limit(this.usersPerPage);

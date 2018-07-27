@@ -1,24 +1,55 @@
 const _ = require('lodash')
-
+const newError = require('../error');
 class teachersMiddleware{
     constructor(options){
         this.teachersAction = options.teachersAction;
     }
     createTeachers(){
-
+        return async (req, res)=>{
+            try {  
+                const body = this.validateTeachers(req.body);
+                const teacher = this.teachersAction.createTeachers(body);
+                return res.status(200).json(teacher);
+            } catch (error) {
+                return res.status(error.code || 500).json(error.message || error);
+            }  
+            
+        }
     }
     findTeachers(){
-
+        return async (req, res)=>{
+            try {
+                const query = this.teachersAction.findTeachers(req.query);
+                return res.status(200).json(query);
+            } catch (error) {
+                return res.status(error.code || 500).json(error.message || error);
+            }
+        }
     }
     updateTeachers(){
-
+        return async (req, res) => {
+            try {
+                const body = this.validateTeachers(req.body);
+                const teacher = this.teachersAction.updateTeachers((req.param.id),body);
+                return res.status(200).json(teacher);
+            } catch (error) {
+                return res.status(error.code || 500).json(error.message || error);
+            }
+        }
     }
     deleteTeachers(){
-
+        return async (req, res) => {
+            try {
+                const teacher = this.teachersAction.deleteTeachers(req.param.id);
+                return res.status(200).json(teacher); 
+            } catch (error) {
+                return res.status(error.code || 500).json(error.message ||　error);
+            }
+        }
     }
     validateTeachers(teachers){
         if(!_isObjectLike(teachers))
-            throw new Error('teacher is not an object');
+            throw new newError(400, 'teacher is not an object');
         const name = teachers.name;
         const profession = teachers.profession;
         const mail = teachers.mail;
@@ -28,19 +59,19 @@ class teachersMiddleware{
         const background_id = teachers.background_id;
 
         if(_.isString(name))
-            throw new Error('name is not a String');
+            throw new newError(400, 'name is not a String');
         if(_.isString(profession))
-            throw new Error('profession is not a String');
+            throw new newError(400, 'profession is not a String');
         if(_.isString(mail))
-            throw new Error('mail is not a String');
+            throw new newError(400, 'mail is not a String');
         if(_.isString(office))
-            throw new Error('office is not a String');
+            throw new newError(400, 'office is not a String');
         if(_.isString(office_number))
-            throw new Error('office is not a String');
+            throw new newError(400, 'office is not a String');
         if(!(_.isNumber(cover_id) || _.isNil(cover_id)))
-            throw new Error('cover_id is not number');
+            throw new newError(400, 'cover_id is not number');
         if(!(_.isNumber(background_id) || _.isNil(background_id)))
-            throw new Error('background_id is not number')
+            throw new newError(400, 'background_id is not number');
     }
 }
 
