@@ -17,8 +17,8 @@ class TeachersAction{
             newTeacher.background_id = findBackgroundQuery.file_id;
             await this.db.insert(newTeacher.transformDatabase()).into('Teachers');
         }
-        catch(err){
-            throw err;
+        catch(error){
+            throw error;
         }
         return data;
     }
@@ -39,12 +39,12 @@ class TeachersAction{
                 teachersList[i].background = findBgObject;
             }
             return{
-                page_total : (teachersCount[0].teachers_count/this.teacherPerPage)+1,
+                page_total : Math.ceil(teachersCount[0].teachers_count/this.teacherPerPage),
                 teachers : teachersList
             }
         }
-        catch(err){
-            throw err;
+        catch(error){
+            throw error;
         }
     }
 
@@ -61,8 +61,8 @@ class TeachersAction{
             await this.db('Teachers').where({teacher_id : teacherId}).update(newTeacher);
             return newTeacher;
         }
-        catch(err){
-            throw err;
+        catch(error){
+            throw error;
         }
         
     }
@@ -71,8 +71,8 @@ class TeachersAction{
             await this.db('Teachers').where({teacher_id : teacherId}).del();
             return teacherId;
         }
-        catch(err){
-            throw err;
+        catch(error){
+            throw error;
         }    
     }
 }

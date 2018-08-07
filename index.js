@@ -27,10 +27,10 @@ class App {
     this.db = Knex(dbConfig);
     this.fileService = new FileService ({app, db: this.db });
     this.newsService = new NewsService({ app, db: this.db, fileService: this.fileService });
-    this.teachersService = new TeachersService({ db: this.db, fileService: this.fileService });
+    this.teachersService = new TeachersService({app, db: this.db, fileService: this.fileService });
     this.paperService = new PaperService({app, db: this.db});
     this.labsService = new LabsService({app, db: this.db, fileService: this.fileService});
-    this.usersService = new UsersService({db: this.db});
+    this.usersService = new UsersService({app, db: this.db});
     // this.loginservice = new Loginservice({db: this.db, userService: this.usersService})
   }
 

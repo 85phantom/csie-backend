@@ -12,8 +12,8 @@ class PapersAction{
             await this.db('Papers').insert(newPapers);
             return newPapers;
         }
-        catch(err){
-            throw err;
+        catch(error){
+            throw error;
         }
     }
 
@@ -24,12 +24,12 @@ class PapersAction{
             const paperList = await this.db('Papers').offset(skip).limit(this.papersPerPage);
             const totalpaper = await this.db('Papers').count('paper_id AS paper')
             return{
-                page_total : (totalpaper[0].paper / this.papersPerPage)+1 ,
+                page_total : Math.ceil(totalpaper[0].paper / this.papersPerPage),
                 papers : paperList
             }
         }
-        catch(err){
-            throw err;
+        catch(error){
+            throw error;
         }
     }
 

@@ -45,7 +45,7 @@ class NewsAction {
       }
       return {
         page_total: Math.ceil
-        (newsCount[0].count / this.newsPerPage) + 1,
+        (newsCount[0].count / this.newsPerPage),
         news: newsList
       }
     }
@@ -69,10 +69,10 @@ class NewsAction {
       }
       await this.db('News').where({news_id : newsId}).update(newNews);
       return newNews;
-  }
-  catch(err){
-      throw err;
-  }
+    }
+    catch(err){
+        throw err;
+    }
   }
 
   async deleteNews(newsId){

@@ -30,7 +30,7 @@ class teachersMiddleware{
         return async (req, res) => {
             try {
                 const body = this.validateTeachers(req.body);
-                const teacher = this.teachersAction.updateTeachers((req.param.id),body);
+                const teacher = this.teachersAction.updateTeachers(parseInt(req.param.id),body);
                 return res.status(200).json(teacher);
             } catch (error) {
                 return res.status(error.code || 500).json(error.message || error);
@@ -40,7 +40,7 @@ class teachersMiddleware{
     deleteTeachers(){
         return async (req, res) => {
             try {
-                const teacher = this.teachersAction.deleteTeachers(req.param.id);
+                const teacher = this.teachersAction.deleteTeachers(parseInt(req.param.id));
                 return res.status(200).json(teacher); 
             } catch (error) {
                 return res.status(error.code || 500).json(error.message ||　error);

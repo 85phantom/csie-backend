@@ -10,7 +10,7 @@ class loginAction{
     }
 
     async userExistCheck(user){
-        const findLogin = await this.userService.action.findUsers({ mail: user.mail });
+        const findLogin = await this.userService.action.findUsers({ email: user.email });
         if(findLogin.users.length == 1){
             return true;
         }
@@ -20,18 +20,20 @@ class loginAction{
     async userLogin(user){
         const newUser = new Users(user)
         if(this.userExistCheck(newUser)){
-            const dbUserQueryResult = await this.userService.action.findUsers({ mail: newUser.mail })
+            const dbUserQueryResult = await this.userService.action.findUsers({ email: newUser.email })
             const dbUser = dbUserQueryResult.users[0]
             const compare = await bcrypt.compare(newUser.password , dbUser.password)
             if(compare){
-                const accesstoken = jwt.sign({ mail: newUser.mail }, key ,{expiresIn:'1d'});
-                return { token : accesstoken};
+                const accesstoken = jwt.sign({ email: newUser.email }, key ,{expiresIn:'1d'});
+                return {token : accesstoken};
             }
             else{
-                throw new newError(403, 'User or password is wrong.')
+                throw new newError(403, 'Email or Password is wrong.')
             }
         }
         else
-            throw new newError(403, 'User or password is wrong.');
+            throw new newError(403, 'Email or Password is wrong.');
     }
 }
+
+module.exports = loginAction;
