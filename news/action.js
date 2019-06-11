@@ -1,5 +1,8 @@
 const News = require('./model');
 const _ = require('lodash');
+const jwt = require('jsonwebtoken')
+const key = 'nyanyanyanya';
+const newError = require('../error');
 
 class NewsAction {
   constructor(options){
@@ -11,10 +14,14 @@ class NewsAction {
   async createNews(data = {}){
     const newNews = new News(data);
     try {
-      const findCoverQuery = await this.fileService.action.createFile(newNews.cover);
-      const findFileQuery = await this.fileService.action.createFile(newNews.file);
-      newNews.cover_id = findCoverQuery.file_id;
-      newNews.file_id = findFileQuery.file_id;
+      if(!(_.isNil())){
+        const findCoverQuery = await this.fileService.action.createFile(newNews.cover);
+        newNews.cover_id = findCoverQuery.file_id;
+      }
+      if(!(_.isNil())){
+        const findFileQuery = await this.fileService.action.createFile(newNews.file);
+        newNews.file_id = findFileQuery.file_id;
+      }
       await this.db.insert(newNews.transformDatabase()).into('News');
     }
     catch(err){
@@ -25,13 +32,27 @@ class NewsAction {
 
   async findNews(query = {}){
     const page = query.page || 1;
+    const search = query.search
     const skip = (page-1) * this.newsPerPage;
 
     try {
-      // console.log(this.db('News').count('news_id AS count').toString());
+      
       const newsList = await this.db('News').offset(skip).limit(this.newsPerPage);
       const newsCount = await this.db('News').count('news_id AS count');
+      if(search){
+        newsList = newsList.where({search:search});
+      }
       for(let i = 0;i<newsList.length;i++){
+        newsList[i].cover = {
+          file_id: 0,
+          path: '',
+          uri: ''
+        }
+        newsList[i].file = {
+          file_id: 0,
+          path: '',
+          uri: ''
+        }
         if(!_.isNil(newsList[i].cover_id)){
           const coverIdInNews = newsList[i].cover_id;
           const findCoverObject = await this.fileService.action.getFileObject(coverIdInNews); 
@@ -79,6 +100,15 @@ class NewsAction {
     await this.db('News').where({news_id: newsId}).del();
     return newsId;
   }
+  verifyUsers(token){
+    try {
+        let decoded = jwt.verify(token, key);
+        const email = decoded.email;
+        return email;
+    } catch (error) {
+        throw new newError(403, error.message);
+    }
+}
 }
 
 module.exports = NewsAction;

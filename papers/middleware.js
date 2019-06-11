@@ -9,6 +9,7 @@ class papersMiddleware{
         return async(req, res) => {
             try {
                 const body = this.validatePapers(req.body);
+                console.log(body)
                 const papers = await this.papersActions.createPapers(body);
                 return res.status(200).json(papers);
                 
@@ -72,6 +73,18 @@ class papersMiddleware{
         }
         if(!(_.isNumber(year) || _.isNil(year)))
             throw new newError(400, 'year is not a number');
+        return papers
+    }
+    verifyUsers(){
+        return (req, res, next) =>{
+            try {
+                const tokenHeader = req.headers['authorization']
+                this.papersActions.verifyUsers(tokenHeader);
+                next();
+            } catch (error) {
+                return res.status(error.code || 500).json(error.message || error);
+            }
+        }
     }
 }
 

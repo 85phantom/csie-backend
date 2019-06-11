@@ -13,7 +13,7 @@ class newsMiddleware {
                 const news = await this.newsActions.createNews(body);
                 return res.status(200).json(news);
             }
-            catch(err){
+            catch(error){
                 return res.status(error.code|| 500).json(error.message|| error);
             }
         }
@@ -70,6 +70,17 @@ class newsMiddleware {
         if(!(_.isNil(file_id) || _.isNumber(parseInt(file_id))))
             throw new newError(400, 'file_id is not Nil');
         return news;
+    }
+    verifyUsers(){
+        return (req, res, next) =>{
+            try {
+                const tokenHeader = req.headers['authorization']
+                this.newsActions.verifyUsers(tokenHeader);
+                next();
+            } catch (error) {
+                return res.status(error.code || 500).json(error.message || error);
+            }
+        }
     }
 }
 

@@ -1,4 +1,7 @@
 const Papers = require('./models');
+const newError = require('../error');
+const jwt = require('jsonwebtoken')
+const key = 'nyanyanyanya';
 
 class PapersAction{
     constructor(option){
@@ -33,8 +36,9 @@ class PapersAction{
         }
     }
 
-    async updatePaper(papersId, data = {}){
+    async updatePapers(papersId, data = {}){
         const newPapers = new Papers(data);
+        console.log(newPapers)
         try{
             await this.db('Papers').where({paper_id : papersId}).update(newPapers);
             return newPapers;
@@ -44,13 +48,22 @@ class PapersAction{
         }
     }
 
-    async deletePaper(papersId){
+    async deletePapers(papersId){
         try{
             await this.db('Papers').where({paper_id : papersId}).del();
             return papersId;
         }
         catch(err){
             throw err;
+        }
+    }
+    verifyUsers(token){
+        try {
+            let decoded = jwt.verify(token, key);
+            const email = decoded.email;
+            return email;
+        } catch (error) {
+            throw new newError(403, error.message);
         }
     }
 }

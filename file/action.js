@@ -1,16 +1,15 @@
 const File = require('./model');
 const Dauria = require('dauria');
-const fs = require('fs');
-const util = require('util');
-const writeFile = util.promisify(fs.writeFile);
 const crypto = require('crypto');
 const _ = require('lodash');
+const AWS = require('aws-sdk')
+const s3 = new AWS.S3();
 
 
 class FileAction{
     constructor(options){
         this.db = options.db;
-        this.dirPath = './picture/'
+        this.dirPath = 'picture/'
     }
 
     async createFile (data = {}){
@@ -27,7 +26,7 @@ class FileAction{
                 hash.update(binaryData.buffer);
                 const hashStirng = hash.digest('hex')
                 newFiles.path = this.dirPath + hashStirng;
-                await writeFile(newFiles.path, binaryData.buffer);
+                await this.writeFileInS3(newFiles.path, binaryData.buffer);
                 delete newFiles.uri;
                 const fileId = await this.db('Files').insert(newFiles);
                 return this.getFileObject(fileId);
@@ -35,6 +34,15 @@ class FileAction{
         }  catch (error) {
             throw error;
         }
+    }
+
+    async writeFileInS3 (filename, buffer){
+        const params = {
+            Bucket : 'csie-website-backend',
+            Key: filename,
+            Body: buffer
+        };
+        return s3.putObject(params).promise();
     }
 
     async getFileObject(id){

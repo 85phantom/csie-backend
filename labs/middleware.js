@@ -72,6 +72,17 @@ class LabMiddleware{
             throw new newError(400, 'cover_id is not Nil');
         return Labs;
     }
+    verifyUsers(){
+        return (req, res, next) =>{
+            try {
+                const tokenHeader = req.headers['authorization']
+                this.labActions.verifyUsers(tokenHeader);
+                next();
+            } catch (error) {
+                return res.status(error.code || 500).json(error.message || error);
+            }
+        }
+    }
 }
 
 module.exports = LabMiddleware;

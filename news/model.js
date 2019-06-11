@@ -1,6 +1,7 @@
 const File = require('../file/model'); 
 
 class News {
+
   /**
    *Creates an instance of News.
    * @param {object} data
@@ -13,6 +14,7 @@ class News {
    * @param {number} data.file_id
    * @memberof News
    */
+
   constructor(data) {
     this.cover = data.cover;
     this.content = data.content || '';

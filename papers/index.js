@@ -7,10 +7,10 @@ class PapersService{
         this.db = options.db;
         this.action = new Action({ db: this.db});
         const middleware = new Middleware({papersActions: this.action})
-        this.app.post('/papers', middleware.createPapers());
+        this.app.post('/papers',middleware.verifyUsers(), middleware.createPapers());
         this.app.get('/papers', middleware.findPapers());
-        this.app.put('/papers/:id', middleware.updatePapers());
-        this.app.delete('/papers/:id', middleware.deletePapers());
+        this.app.put('/papers/:id',middleware.verifyUsers(), middleware.updatePapers());
+        this.app.delete('/papers/:id',middleware.verifyUsers(), middleware.deletePapers());
     }
 }
 

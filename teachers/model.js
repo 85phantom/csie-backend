@@ -22,8 +22,8 @@ class Teachers {
         this.mail = data.mail;
         this.office = data.office;
         this.office_number = data.office_number;
-        this.cover = new File(data.cover);
-        this.background = new File(data.background);
+        this.cover = data.cover;
+        this.background = data.background;
         this.cover_id = null;
         this.background_id = null;
     }

@@ -9,7 +9,7 @@ class UsersService {
     const middleware = new Middleware({usersAction: this.action})
     this.app.post('/users',middleware.verifyUsers(), middleware.createUsers());
     this.app.get('/users', middleware.findUsers());
-    this.app.put('/users/:id', middleware.updateUsers())
+    this.app.put('/users/:id',middleware.verifyUsers(), middleware.updateUsers())
     this.app.delete('/users/:id', middleware.verifyUsers(), middleware.deleteUsers());
     this.app.post('/login', middleware.loginUsers());
   }

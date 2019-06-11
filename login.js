@@ -9,7 +9,7 @@ class loginAction{
         this.userService= option.userService;
     }
 
-    async userExistCheck(user){
+    async userExistCheckByUser(user){
         const findLogin = await this.userService.action.findUsers({ email: user.email });
         if(findLogin.users.length == 1){
             return true;
@@ -19,7 +19,7 @@ class loginAction{
 
     async userLogin(user){
         const newUser = new Users(user)
-        if(this.userExistCheck(newUser)){
+        if(this.userExistCheckByUser(newUser)){
             const dbUserQueryResult = await this.userService.action.findUsers({ email: newUser.email })
             const dbUser = dbUserQueryResult.users[0]
             const compare = await bcrypt.compare(newUser.password , dbUser.password)

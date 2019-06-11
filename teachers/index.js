@@ -8,10 +8,10 @@ class TeachersService{
         this.fileService = options.fileService;
         this.action = new Action({db: this.db, fileService: this.fileService });
         const middleware = new Middleware({teachersAction: this.action});
-        this.app.post('/teachers', middleware.createTeachers());
+        this.app.post('/teachers', middleware.verifyUsers(), middleware.createTeachers());
         this.app.get('/teachers', middleware.findTeachers());
-        this.app.put('/teachers/:id', middleware.updateTeachers());
-        this.app.delete('/teachers/:id', middleware.deleteTeachers());
+        this.app.put('/teachers/:id',middleware.verifyUsers(), middleware.updateTeachers());
+        this.app.delete('/teachers/:id', middleware.verifyUsers(), middleware.deleteTeachers());
     }
 }
 

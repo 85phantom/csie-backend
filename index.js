@@ -31,7 +31,6 @@ class App {
     this.paperService = new PaperService({app, db: this.db});
     this.labsService = new LabsService({app, db: this.db, fileService: this.fileService});
     this.usersService = new UsersService({app, db: this.db});
-    // this.loginservice = new Loginservice({db: this.db, userService: this.usersService})
   }
 
   async start() {
@@ -42,3 +41,4 @@ class App {
 }
 
 new App().start().then();
+

@@ -1,5 +1,8 @@
 const Teachers = require('./model');
 const newError = require('../error');
+const jwt = require('jsonwebtoken')
+const key = 'nyanyanyanya';
+const _ = require('lodash');
 
 class TeachersAction{
     constructor(options){
@@ -11,10 +14,15 @@ class TeachersAction{
     async createTeachers(data = {}){
         const newTeacher = new Teachers(data);
         try{
-            const findCoverQuery = await this.fileService.action.createFile(newTeacher.cover);
-            const findBackgroundQuery = await this.fileService.action.createFile(newTeacher.background);
-            newTeacher.cover_id = findCoverQuery.file_id;
-            newTeacher.background_id = findBackgroundQuery.file_id;
+            if(!(_.isNil(newTeacher.cover))){
+                const newTeacherCover = await this.fileService.action.saveFile(newTeacher.cover);
+                newTeacher.cover_id = newTeacherCover;
+            }
+            if(!(_.isNil(newTeacher.background))){
+                const newTeacherBackground = await this.fileService.action.saveFile(newTeacher.background);
+                newTeacher.background_id = newTeacherBackground;
+            }
+            
             await this.db.insert(newTeacher.transformDatabase()).into('Teachers');
         }
         catch(error){
@@ -31,12 +39,27 @@ class TeachersAction{
             const teachersList = await this.db('Teachers').offset(skip).limit(this.teacherPerPage);
             const teachersCount = await this.db('Teachers').count('teacher_id as teachers_count');
             for(let i = 0;i<this.teacherPerPage;i++){
-                const coverIdInTeacher = teachersList[i].cover_id;
-                const bgIdInTeacher = teachersList[i].background_id;
-                const findCoverObject = await this.fileService.action.getFileObject(coverIdInTeacher);
-                const findBgObject = await this.fileService.action.getFileObject(bgIdInTeacher);
-                teachersList[i].cover = findCoverObject;
-                teachersList[i].background = findBgObject;
+                teachersList[i].cover = {
+                    file_id: 0,
+                    path: '',
+                    uri: ''
+                }
+                teachersList[i].background = {
+                    file_id: 0,
+                    path: '',
+                    uri: ''
+                }
+
+                if(!(_.isNil(teachersList[i].cover_id))){
+                    const coverIdInTeacher = teachersList[i].cover_id;
+                    const findCoverObject = await this.fileService.action.getFileObject(coverIdInTeacher);
+                    teachersList[i].cover = findCoverObject;
+                }
+                if(!(_.isNil(teachersList[i].background_id))){
+                    const bgIdInTeacher = teachersList[i].background_id;
+                    const findBgObject = await this.fileService.action.getFileObject(bgIdInTeacher);
+                    teachersList[i].background = findBgObject;
+                }
             }
             return{
                 page_total : Math.ceil(teachersCount[0].teachers_count/this.teacherPerPage),
@@ -51,13 +74,18 @@ class TeachersAction{
     async updateTeachers(teacherId, data={}){
         const newTeacher = new Teachers(data);
         try{
-            const newTeacherCover = await this.fileService.action.saveFile(newTeacher.cover);
-            const newTeacherBackground = await this.fileService.action.saveFile(newTeacher.background);
-            newTeacher.cover_id = newTeacherCover;
-            newTeacher.background_id = newTeacherBackground;
+            if(!(_.isNil(newTeacher.cover))){
+                const newTeacherCover = await this.fileService.action.saveFile(newTeacher.cover);
+                newTeacher.cover_id = newTeacherCover;
+            }
+            if(!(_.isNil(newTeacher.background))){
+                const newTeacherBackground = await this.fileService.action.saveFile(newTeacher.background);
+                newTeacher.background_id = newTeacherBackground;
+            }
            
             delete newTeacher.cover;
             delete newTeacher.background;
+            console.log(newTeacher)
             await this.db('Teachers').where({teacher_id : teacherId}).update(newTeacher);
             return newTeacher;
         }
@@ -74,6 +102,15 @@ class TeachersAction{
         catch(error){
             throw error;
         }    
+    }
+    verifyUsers(token){
+        try {
+            let decoded = jwt.verify(token, key);
+            const email = decoded.email;
+            return email;
+        } catch (error) {
+            throw new newError(403, error.message);
+        }
     }
 }
 
