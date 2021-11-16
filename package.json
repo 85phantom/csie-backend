@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.466.0",
+    "aws-sdk": "^2.814.0",
     "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
     "dauria": "https://github.com/Mithgol/dauria/tarball/master",
