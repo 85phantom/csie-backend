@@ -11,9 +11,9 @@
   "dependencies": {
     "aws-sdk": "^2.466.0",
     "bcrypt": "^3.0.0",
-    "body-parser": "^1.18.3",
+    "body-parser": "^1.20.1",
     "dauria": "https://github.com/Mithgol/dauria/tarball/master",
-    "express": "^4.16.3",
+    "express": "^4.18.2",
     "jsonwebtoken": "^8.3.0",
     "knex": "^0.14.6",
     "mysql": "^2.15.0",
