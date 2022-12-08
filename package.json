@@ -13,7 +13,7 @@
     "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
     "dauria": "https://github.com/Mithgol/dauria/tarball/master",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "jsonwebtoken": "^8.3.0",
     "knex": "^0.14.6",
     "mysql": "^2.15.0",
