@@ -15,7 +15,7 @@
     "dauria": "https://github.com/Mithgol/dauria/tarball/master",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
-    "knex": "^0.14.6",
+    "knex": "^2.4.0",
     "mysql": "^2.15.0",
     "mysql2": "^1.5.3"
   }
